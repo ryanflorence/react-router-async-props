@@ -117,6 +117,12 @@ var routes = (
     <Route name="friends" handler={FriendsHandler}/>
   </Route>
 );
+
+// same signature as Router.run
+var { HistoryLocation } = require('react-router');
+run(routes, HistoryLocation, (Handler, state, asyncProps) => {
+  React.render(<Handler/>, document.body);
+});
 ```
 
 Notes
