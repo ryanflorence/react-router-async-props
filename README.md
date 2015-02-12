@@ -57,6 +57,8 @@ var FriendsHandler = React.createClass({
 
         // called when the route handler is first mounted
         setup (onChange) {
+          // when onChange is called, the app rerenders from the top,
+          // calling "load" on all async props again
           FriendStore.addChangeListenter(onChange);
         },
 
@@ -123,4 +125,7 @@ Notes
 The error handling from using promises is driving me nuts, so expect the
 `load` hook to send a callback instead of ask for a promise in the near
 future, but promises make waiting on all the load hooks really trivial.
+
+I'd also like the `onChange` to be smarter and not cause a rerender from
+the top, but only on the route handler that has changed data.
 
