@@ -2,7 +2,7 @@
   "name": "react-router-async-props",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "modules/index.js",
   "scripts": {
     "test": "scripts/test --single-run"
   },
