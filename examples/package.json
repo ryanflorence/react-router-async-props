@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "webpack --progress --colors",
+    "start": "webpack-dev-server --inline --no-info --progress"
+  },
+  "dependencies": {
+    "react": "0.12.2",
+    "react-router": "0.12",
+    "react-tools": "0.12.2"
+  },
+  "devDependencies": {
+    "6to5-loader": "latest",
+    "jsx-loader": "latest",
+    "react-hot-loader": "latest",
+    "react-tools": "latest",
+    "webpack-dev-server": "1.7.0"
+  }
+}
