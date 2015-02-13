@@ -69,7 +69,7 @@ var FriendsHandler = React.createClass({
       },
 
       // get child dependencies (a bit like relay minus graphql)
-      groups: GroupList.asyncProps.groups
+      groups: Groups.asyncProps.groups
     }
   },
 
@@ -113,7 +113,7 @@ var AppHandler = React.createClass({
 
 
 var routes = (
-  <Route handler={App}>
+  <Route handler={AppHandler}>
     <Route name="friends" handler={FriendsHandler}/>
   </Route>
 );
