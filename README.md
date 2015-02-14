@@ -135,3 +135,11 @@ future, but promises make waiting on all the load hooks really trivial.
 I'd also like the `onChange` to be smarter and not cause a rerender from
 the top, but only on the route handler that has changed data.
 
+Project
+-------
+
+```sh
+npm install
+npm run examples
+```
+

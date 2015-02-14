@@ -4,14 +4,12 @@
   "description": "",
   "main": "modules/index.js",
   "scripts": {
-    "test": "scripts/test --single-run"
+    "test": "scripts/test --single-run",
+    "examples": "webpack-dev-server --config examples/webpack.config.js --inline --content-base examples"
   },
-  "author": "",
+  "author": "Ryan Florence <rpflorence@gmail.com",
   "license": "ISC",
   "devDependencies": {
-    "6to5": "3.5.3",
-    "6to5-core": "3.5.3",
-    "6to5-loader": "3.0.0",
     "expect": "1.6.0",
     "karma-chrome-launcher": "^0.1.7",
     "karma-cli": "0.0.4",

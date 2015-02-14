@@ -108,6 +108,10 @@ var runRouter = (router, callback) => {
 };
 
 var run = (routes, location, callback) => {
+  if (!callback) {
+    callback = location;
+    location = Router.HashLocation;
+  }
   var router = Router.create({ routes, location });
   runRouter(router, callback);
   return router;
