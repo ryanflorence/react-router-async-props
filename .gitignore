@@ -1,2 +1,4 @@
-node_modules
+.module-cache
+dist
 examples/index.html
+node_modules
