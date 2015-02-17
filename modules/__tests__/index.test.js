@@ -117,6 +117,22 @@ describe('getAsyncProps', () => {
   });
 });
 
+describe('Handler', () => {
+  it('passes application props', (done) => {
+    var App = React.createClass({
+      render () {
+        return <div>{this.props.name}</div>;
+      }
+    });
+    var routes = <Route handler={App}/>;
+    run(routes, "/", (Handler, state) => {
+      var html = React.renderToString(<Handler name="test" />);
+      expect(html).toContain('test');
+      done();
+    });
+  });
+});
+
 describe('run', () => {
   var routes = (
     <Route handler={CourseList}>

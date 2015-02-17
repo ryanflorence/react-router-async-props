@@ -3,6 +3,7 @@ var React = require('react');
 var assign = require('react/lib/Object.assign');
 var Router = require('react-router');
 var { RouteHandlerMixin } = Router;
+var warning = require('react/lib/warning');
 
 var getAsyncProps = (components, info) => {
   return Promise.all(components.map((component) => {
@@ -26,6 +27,16 @@ var runHooks = (hook, handler, asyncState) => {
   }
 };
 
+var warnAboutDuplicateProps = (userProps, asyncProps, component) => {
+  Object.keys(userProps).forEach((propName) => {
+    warning(
+      !asyncProps[propName],
+      'You passed in a prop to a route handler that is already defined in '+
+      '`asyncProps`, your prop will be ignored in favor of the async prop.'
+    );
+  });
+};
+
 var RouteHandler = React.createClass({
 
   mixins: [ RouteHandlerMixin ],
@@ -46,6 +57,7 @@ var RouteHandler = React.createClass({
 
   render () {
     var asyncProps = this.context.asyncPropsState.props[this.getRouteDepth()];
+    warnAboutDuplicateProps(this.props, asyncProps);
     return this.createChildRouteHandler(assign({}, this.props, asyncProps));
   }
 });
@@ -86,7 +98,8 @@ var runRouter = (router, callback) => {
     },
 
     render () {
-      return React.createElement(RouterHandler, state.props[0]);
+      warnAboutDuplicateProps(this.props, state.props[0]);
+      return React.createElement(RouterHandler, assign({}, this.props, state.props[0]));
     }
   });
 
@@ -97,7 +110,7 @@ var runRouter = (router, callback) => {
       setState({ props });
       callback(Root, routerState, state.props);
     }).done();
-  }
+  };
 
   router.run((Handler, routerState) => {
     setState({ Handler, routerState });
