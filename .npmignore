@@ -4,3 +4,4 @@ scripts
 karma.conf.js
 tests.webpack.js
 __tests__
+.module-cache
