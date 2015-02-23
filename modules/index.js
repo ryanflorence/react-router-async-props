@@ -27,14 +27,15 @@ var runHooks = (hook, handler, asyncState) => {
   }
 };
 
-var warnAboutDuplicateProps = (userProps, asyncProps, component) => {
-  Object.keys(userProps).forEach((propName) => {
-    warning(
-      !asyncProps[propName],
-      'You passed in a prop to a route handler that is already defined in '+
-      '`asyncProps`, your prop will be ignored in favor of the async prop.'
-    );
-  });
+var warnAboutDuplicateProps = (userProps, asyncProps) => {
+  if (asyncProps)
+    Object.keys(userProps).forEach((propName) => {
+      warning(
+        !asyncProps[propName],
+        'You passed in a prop to a route handler that is already defined in '+
+        '`asyncProps`, your prop will be ignored in favor of the async prop.'
+      );
+    });
 };
 
 var RouteHandler = React.createClass({
