@@ -1,19 +1,36 @@
-var Promise = require('when').Promise;
-var keys = require('when/keys');
 var React = require('react');
 var assign = require('react/lib/Object.assign');
 var Router = require('react-router');
-var { RouteHandlerMixin } = Router;
 var warning = require('react/lib/warning');
+var { RouteHandlerMixin } = Router;
 
 var getAsyncProps = (components, info) => {
-  return Promise.all(components.map((component) => {
-    var asyncProps = component.asyncProps || {};
-    return keys.all(Object.keys(asyncProps).reduce((promises, propName) => {
-      promises[propName] = asyncProps[propName].load(info);
-      return promises;
-    }, {}));
-  }));
+  var loaders = components.reduce((loaders, component) => {
+    if (component.hasOwnProperty('asyncProps')) {
+      Object.keys(component.asyncProps).forEach((propName) => {
+        loaders.push(component.asyncProps[propName].load(info));
+      });
+    }
+
+    return loaders;
+  }, []);
+
+  return Promise.all(loaders).then((result) => {
+    var cursor = 0;
+
+    return components.reduce((propSet, component) => {
+      var props = {};
+
+      if (component.hasOwnProperty('asyncProps')) {
+        props = Object.keys(component.asyncProps).reduce((props, propName) => {
+          props[propName] = result[cursor++];
+          return props;
+        }, {});
+      }
+
+      return propSet.concat(props);
+    }, []);
+  });
 };
 
 var runHooks = (hook, handler, asyncState) => {
@@ -50,14 +67,34 @@ var RouteHandler = React.createClass({
   componentDidMount () {
     var route = this.context.getRouteAtDepth(this.getRouteDepth());
     // TODO: do we really need this? surfacing in ember migration app
-    if (route && route.handler)
+    if (route && route.handler) {
       runHooks('setup', route.handler, this.context.asyncPropsState);
+      this.lastHandler = route.handler;
+    }
+  },
+
+  componentDidUpdate() {
+    var route = this.context.getRouteAtDepth(this.getRouteDepth());
+    var lastHandler = this.lastHandler;
+    var currHandler;
+
+    if (route && route.handler) {
+      currHandler = route.handler;
+
+      if (lastHandler !== currHandler) {
+        runHooks('teardown', lastHandler, this.context.asyncPropsState);
+        runHooks('setup', currHandler, this.context.asyncPropsState);
+        this.lastHandler = currHandler;
+      }
+    }
   },
 
   componentWillUnmount () {
     var route = this.context.getRouteAtDepth(this.getRouteDepth());
     if (route && route.handler)
       runHooks('teardown', route.handler, this.context.asyncPropsState);
+
+    this.lastHandler = null;
   },
 
   render () {
@@ -113,10 +150,12 @@ var runRouter = (router, callback) => {
   var run = () => {
     var { routerState } = state;
     var handlers = routerState.routes.map(route => route.handler);
-    getAsyncProps(handlers, routerState).then((props) => {
+    var loader = getAsyncProps(handlers, routerState);
+    var notify = () => { callback(Root, routerState, state.props, loader); };
+
+    loader.then((props) => {
       setState({ props });
-      callback(Root, routerState, state.props);
-    }).done();
+    }).then(notify, notify);
   };
 
   router.run((Handler, routerState) => {
@@ -143,4 +182,3 @@ module.exports = {
   getAsyncProps,
   RouteHandler
 };
-

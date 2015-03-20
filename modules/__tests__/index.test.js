@@ -2,7 +2,6 @@ console.log(Date.now());
 var React = require('react');
 var Router = require('react-router');
 var expect = require('expect');
-var Promise = require('when').Promise;
 var { Route } = Router;
 var { EventEmitter } = require('events');
 
@@ -35,6 +34,16 @@ var changeDataKey = (key) => {
 beforeEach(() => {
   changeDataKey('courses');
 });
+
+var stub = function(target, methodName, newMethod) {
+  var original = target[methodName];
+
+  target[methodName] = newMethod.bind({
+    restore: function() {
+      target[methodName] = original;
+    }
+  });
+};
 
 var CourseList = React.createClass({
   statics: {
@@ -195,6 +204,29 @@ describe('run', () => {
 
     run(routes, "/course/1", (Handler, state, onChange) => {
       React.render(<Handler />, div, () => steps.shift()());
+    });
+  });
+
+  describe('error handling / propagation', function() {
+    afterEach(function() {
+      if (Course.asyncProps.course.load.restore) {
+        Course.asyncProps.course.load.restore();
+      }
+    });
+
+    it('allows me to catch failures using the loading promise', (done) => {
+      stub(Course.asyncProps.course, 'load', function() {
+        return Promise.reject('heheheh');
+      });
+
+      run(routes, "/course/1", (Handler, state, onChange, loader) => {
+        loader.then(null, (error) => {
+          expect(error).toEqual('heheheh');
+          done();
+        });
+
+        React.render(<Handler />, document.createElement('div'));
+      });
     });
   });
 });

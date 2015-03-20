@@ -26,9 +26,6 @@
     "rf-release": "0.4.0",
     "webpack": "1.5.3"
   },
-  "dependencies": {
-    "when": "^3.7.2"
-  },
   "peerDependencies": {
     "react": "0.12.x",
     "react-router": "0.12.x"
