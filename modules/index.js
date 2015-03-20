@@ -50,14 +50,34 @@ var RouteHandler = React.createClass({
   componentDidMount () {
     var route = this.context.getRouteAtDepth(this.getRouteDepth());
     // TODO: do we really need this? surfacing in ember migration app
-    if (route && route.handler)
+    if (route && route.handler) {
       runHooks('setup', route.handler, this.context.asyncPropsState);
+      this.lastHandler = route.handler;
+    }
+  },
+
+  componentDidUpdate() {
+    var route = this.context.getRouteAtDepth(this.getRouteDepth());
+    var lastHandler = this.lastHandler;
+    var currHandler;
+
+    if (route && route.handler) {
+      currHandler = route.handler;
+
+      if (lastHandler !== currHandler) {
+        runHooks('teardown', lastHandler, this.context.asyncPropsState);
+        runHooks('setup', currHandler, this.context.asyncPropsState);
+        this.lastHandler = currHandler;
+      }
+    }
   },
 
   componentWillUnmount () {
     var route = this.context.getRouteAtDepth(this.getRouteDepth());
     if (route && route.handler)
       runHooks('teardown', route.handler, this.context.asyncPropsState);
+
+    this.lastHandler = null;
   },
 
   render () {
