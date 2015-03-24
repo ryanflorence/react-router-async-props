@@ -2,7 +2,7 @@ var Promise = require('bluebird');
 var React = require('react');
 var assign = require('react/lib/Object.assign');
 var Router = require('react-router');
-var { RouteHandlerMixin } = Router;
+var RouterPropTypes = require('react-router/lib/PropTypes');
 var warning = require('react/lib/warning');
 
 var getAsyncProps = (components, info) => {
@@ -38,33 +38,34 @@ var warnAboutDuplicateProps = (userProps, asyncProps) => {
     });
 };
 
-var RouteHandler = React.createClass({
-
-  mixins: [ RouteHandlerMixin ],
-
-  contextTypes: {
-    asyncPropsState: React.PropTypes.object
-  },
+class RouteHandler extends Router.RouteHandler {
 
   componentDidMount () {
-    var route = this.context.getRouteAtDepth(this.getRouteDepth());
+    var route = this.context.router.getRouteAtDepth(this.getRouteDepth());
     // TODO: do we really need this? surfacing in ember migration app
     if (route && route.handler)
       runHooks('setup', route.handler, this.context.asyncPropsState);
-  },
+  }
 
   componentWillUnmount () {
-    var route = this.context.getRouteAtDepth(this.getRouteDepth());
+    var route = this.context.router.getRouteAtDepth(this.getRouteDepth());
     if (route && route.handler)
       runHooks('teardown', route.handler, this.context.asyncPropsState);
-  },
+  }
 
   render () {
     var asyncProps = this.context.asyncPropsState.props[this.getRouteDepth()];
     warnAboutDuplicateProps(this.props, asyncProps);
     return this.createChildRouteHandler(assign({}, this.props, asyncProps));
   }
-});
+
+}
+
+RouteHandler.contextTypes = {
+  asyncPropsState: React.PropTypes.object,
+  routeDepth: React.PropTypes.number.isRequired,
+  router: RouterPropTypes.router.isRequired
+};
 
 var runRouter = (router, callback) => {
   var state = {
