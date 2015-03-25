@@ -1,4 +1,5 @@
-var Promise = require('bluebird');
+var Promise = require('when').Promise;
+var keys = require('when/keys');
 var React = require('react');
 var assign = require('react/lib/Object.assign');
 var Router = require('react-router');
@@ -8,7 +9,7 @@ var warning = require('react/lib/warning');
 var getAsyncProps = (components, info) => {
   return Promise.all(components.map((component) => {
     var asyncProps = component.asyncProps || {};
-    return Promise.props(Object.keys(asyncProps).reduce((promises, propName) => {
+    return keys.all(Object.keys(asyncProps).reduce((promises, propName) => {
       promises[propName] = asyncProps[propName].load(info);
       return promises;
     }, {}));

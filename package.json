@@ -27,7 +27,7 @@
     "webpack": "1.5.3"
   },
   "dependencies": {
-    "bluebird": "2.9.8"
+    "when": "^3.7.2"
   },
   "peerDependencies": {
     "react": "0.12.x",
