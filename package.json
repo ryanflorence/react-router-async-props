@@ -30,7 +30,7 @@
     "when": "^3.7.2"
   },
   "peerDependencies": {
-    "react": "0.12.x",
-    "react-router": "0.12.x"
+    "react": "0.13.x",
+    "react-router": "0.13.x"
   }
 }
