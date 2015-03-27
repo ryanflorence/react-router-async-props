@@ -5,9 +5,9 @@ var warning = require('react/lib/warning');
 var { RouteHandlerMixin } = Router;
 
 var getAsyncProps = (components, info) => {
-  var loaders = components.reduce(function(loaders, component) {
+  var loaders = components.reduce((loaders, component) => {
     if (component.hasOwnProperty('asyncProps')) {
-      Object.keys(component.asyncProps).forEach(function(propName) {
+      Object.keys(component.asyncProps).forEach((propName) => {
         loaders.push(component.asyncProps[propName].load(info));
       });
     }
@@ -15,14 +15,14 @@ var getAsyncProps = (components, info) => {
     return loaders;
   }, []);
 
-  return Promise.all(loaders).then(function(result) {
+  return Promise.all(loaders).then((result) => {
     var cursor = 0;
 
-    return components.reduce(function(propSet, component) {
+    return components.reduce((propSet, component) => {
       var props = {};
 
       if (component.hasOwnProperty('asyncProps')) {
-        props = Object.keys(component.asyncProps).reduce(function(props, propName) {
+        props = Object.keys(component.asyncProps).reduce((props, propName) => {
           props[propName] = result[cursor++];
           return props;
         }, {});
@@ -150,10 +150,12 @@ var runRouter = (router, callback) => {
   var run = () => {
     var { routerState } = state;
     var handlers = routerState.routes.map(route => route.handler);
-    getAsyncProps(handlers, routerState).then((props) => {
+    var loader = getAsyncProps(handlers, routerState);
+    var notify = () => { callback(Root, routerState, state.props, loader); };
+
+    loader.then((props) => {
       setState({ props });
-      callback(Root, routerState, state.props);
-    });
+    }).then(notify, notify);
   };
 
   router.run((Handler, routerState) => {
