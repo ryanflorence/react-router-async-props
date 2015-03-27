@@ -9,6 +9,8 @@ WIP
 This is a work in progress, we're going to try it out in one of our apps
 @instructure, see how it goes.
 
+**This library assumes `Promise` is available as a global.**
+
 Usage
 -----
 

@@ -2,7 +2,6 @@ console.log(Date.now());
 var React = require('react');
 var Router = require('react-router');
 var expect = require('expect');
-var Promise = require('when').Promise;
 var { Route } = Router;
 var { EventEmitter } = require('events');
 

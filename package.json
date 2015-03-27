@@ -1,6 +1,6 @@
 {
   "name": "react-router-async-props",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -25,9 +25,6 @@
     "react-tools": "0.12.2",
     "rf-release": "0.4.0",
     "webpack": "1.5.3"
-  },
-  "dependencies": {
-    "when": "^3.7.2"
   },
   "peerDependencies": {
     "react": "0.12.x",
