@@ -9,6 +9,8 @@ WIP
 This is a work in progress, we're going to try it out in one of our apps
 @instructure, see how it goes.
 
+**This library assumes `Promise` is available as a global.**
+
 Usage
 -----
 
@@ -118,10 +120,16 @@ var routes = (
   </Route>
 );
 
-// same signature as Router.run
+// Same signature as Router.run, except for the 4th argument which is the
+// aggregate promise of all asyncProp loaders. You can use this to handle
+// loading errors.
 var { HistoryLocation } = require('react-router');
-run(routes, HistoryLocation, (Handler, state, asyncProps) => {
+run(routes, HistoryLocation, (Handler, state, asyncProps, loader) => {
   React.render(<Handler/>, document.body);
+
+  loader.then(null, function(error) {
+    // handle error
+  });
 });
 ```
 
