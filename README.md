@@ -31,10 +31,10 @@ var Groups = React.createClass({
           return GroupsStore.fetchAll();
         },
         setup (onChange) {
-          GroupStore.addChangeListenter(onChange);
+          GroupStore.addChangeListener(onChange);
         },
         teardown (onChange) {
-          GroupStore.removeChangeListenter(onChange);
+          GroupStore.removeChangeListener(onChange);
         }
       }
     }
@@ -61,12 +61,12 @@ var FriendsHandler = React.createClass({
         setup (onChange) {
           // when onChange is called, the app rerenders from the top,
           // calling "load" on all async props again
-          FriendStore.addChangeListenter(onChange);
+          FriendStore.addChangeListener(onChange);
         },
 
         // called when the route handler is unmounted
         teardown (onChange) {
-          FriendStore.removeChangeListenter(onChange);
+          FriendStore.removeChangeListener(onChange);
         }
       },
 
